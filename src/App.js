@@ -1,23 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 function App() {
+  const [news, setNews] = useState([]);
+
+  useEffect(() => {
+    axios.get('https://crypto-news-backend-production.up.railway.app/news')
+      .then((res) => {
+        setNews(res.data);
+      })
+      .catch((err) => {
+        console.error("خطا در دریافت اخبار:", err);
+      });
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{ padding: '2rem' }}>
+      <h1>اخبار ارز دیجیتال</h1>
+      {news.length === 0 ? (
+        <p>در حال دریافت اخبار...</p>
+      ) : (
+        news.map((item, index) => (
+          <div key={index} style={{ marginBottom: '1rem', borderBottom: '1px solid #ccc' }}>
+            <h2>{item.title}</h2>
+            <p>{item.description}</p>
+          </div>
+        ))
+      )}
     </div>
   );
 }
